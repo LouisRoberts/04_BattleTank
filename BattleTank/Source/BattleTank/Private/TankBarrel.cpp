@@ -2,6 +2,10 @@
 
 #include "TankBarrel.h"
 
+UTankBarrel::UTankBarrel() {
+
+}
+
 void UTankBarrel::Elevate(float DegreesPerSecond) {
 	// Given a max elevation speed and frame time
 
