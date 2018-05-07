@@ -6,17 +6,17 @@
 void ATankPlayerController::BeginPlay() 
 {
 	Super::BeginPlay();
-	//UE_LOG(LogTemp, Warning, TEXT("PlayerController Begin Play"));
+}
 
-	auto ControlledTank = GetControlledTank();
-	if (!ControlledTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerController not possessing a tank"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerController possessing tank: %s"), *ControlledTank->GetName());
-	}
+void ATankPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	AimTowardsCrosshair();
+}
+
+ATank* ATankPlayerController::GetControlledTank() const
+{
+	return Cast<ATank>(GetPawn());
 }
 
 void ATankPlayerController::AimTowardsCrosshair() {
@@ -32,12 +32,24 @@ void ATankPlayerController::AimTowardsCrosshair() {
 	}
 }
 
-bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const{
-	FVector CameraWorldLocation;
-	// De-project screen position of cross hair to world direction
-	return DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y,
-								CameraWorldLocation, LookDirection);
+// return true if hits landscape
+bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
+{
+	// Find the Crosshair position
+	int32 ViewportSizeX, ViewportSizeY;
+	GetViewportSize(ViewportSizeX, ViewportSizeY);
+	auto ScreenLocation = FVector2D(ViewportSizeX * CrossHairXLocation, ViewportSizeY * CrossHairYLocation);
+
+	FVector LookDirection;
+	if (GetLookDirection(ScreenLocation, LookDirection)) {
+
+		//UE_LOG(LogTemp, Warning, TEXT("Look Direction %s"), *LookDirection.ToString());
+		// line trace along points
+		return GetLookVectorHitLocation(LookDirection, HitLocation);
+	}
+	return false;
 }
+
 
 bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection,FVector& HitLocation) const {
 	FHitResult HitResult;
@@ -53,31 +65,12 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection,FVect
 
 }
 
-// return true if hits landscape
-bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
-{
-	// Find the Crosshair position
-	int32 ViewportSizeX, ViewportSizeY;
-	GetViewportSize(ViewportSizeX, ViewportSizeY);
-	auto ScreenLocation = FVector2D(ViewportSizeX * CrossHairXLocation, ViewportSizeY * CrossHairYLocation);
-	
-	FVector LookDirection;
-	if (GetLookDirection(ScreenLocation, LookDirection)) {
-		
-		//UE_LOG(LogTemp, Warning, TEXT("Look Direction %s"), *LookDirection.ToString());
-		// line trace along points
-		return GetLookVectorHitLocation(LookDirection, HitLocation);
-	}
-	return false;
+bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const {
+	FVector CameraWorldLocation;
+	// De-project screen position of cross hair to world direction
+	return DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y,
+		CameraWorldLocation, LookDirection);
 }
 
-void ATankPlayerController::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	AimTowardsCrosshair();
-}
 
-ATank* ATankPlayerController::GetControlledTank() const
-{
-	return Cast<ATank>(GetPawn());
-}
+

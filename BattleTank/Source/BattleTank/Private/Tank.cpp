@@ -3,6 +3,9 @@
 #include "Tank.h"
 #include "Engine/World.h"
 #include "Projectile.h"
+#include "TankAimingComponent.h"
+#include "TankBarrel.h"
+#include "TankMovementComponent.h"
 
 // Sets default values
 ATank::ATank()
@@ -23,12 +26,6 @@ void ATank::SetTurretReference(UTankTurret * TurretToSet)
 	TankAimingComponent->SetTurretReference(TurretToSet);
 }
 
-void ATank::AimAt(FVector HitLocation) {
-	auto OutTankName = GetName();
-	//UE_LOG(LogTemp, Warning, TEXT("Name:%s"), *OutTankName);
-	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
-}
-
 // Called when the game starts or when spawned
 void ATank::BeginPlay()
 {
@@ -43,8 +40,11 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void ATank::AimAt(FVector HitLocation) {
+	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
+}
+
 void ATank::Fire() {
-	//UE_LOG(LogTemp, Warning, TEXT("Reload Time :%f"), ReloadTimeInSeconds);
 	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
 	if (Barrel && isReloaded) {
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(
