@@ -14,9 +14,16 @@ void UTankMovementComponent::Initialise(UTankTrack* LeftTrackToSet, UTankTrack* 
 void UTankMovementComponent::RequestDirectMove(const FVector & MoveVelocity, bool bForceMaxSpeed)
 {
 	// no need to call super as logic is being replaced
-	auto TankName = GetOwner()->GetName();
-	auto MoveVelocityString = MoveVelocity.ToString();
-	UE_LOG(LogTemp, Warning, TEXT("%s vectoring to %s"), *TankName, *MoveVelocityString);
+	auto TankForward = GetOwner()->GetActorForwardVector().GetSafeNormal();
+	auto AIForwardIntention = MoveVelocity.GetSafeNormal();
+	
+	// Use Dot Product to move tank forward towards opponent
+	auto ForwardThrow = FVector::DotProduct(TankForward,AIForwardIntention);
+	IntendMoveForward(ForwardThrow);
+
+	// Use Cross Product to rotate tank
+	auto RightThrow = FVector::CrossProduct(TankForward, AIForwardIntention).Z;
+	IntendTurnRight(RightThrow);
 }
 
 void UTankMovementComponent::IntendMoveForward(float Throw) {
