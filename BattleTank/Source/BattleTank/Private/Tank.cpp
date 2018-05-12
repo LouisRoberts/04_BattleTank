@@ -16,16 +16,14 @@ ATank::ATank()
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
+	TankAimingComponent = FindComponentByClass<UTankAimingComponent>();
 }
 
 
 void ATank::AimAt(FVector HitLocation) {
-	UE_LOG(LogTemp, Warning, TEXT("ATank::AimAt : 1"));
 	if (!ensure(TankAimingComponent)) {
-		UE_LOG(LogTemp, Warning, TEXT("ATank::AimAt : Err2"));
 		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("ATank::AimAt : 3"));
 	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 }
 
