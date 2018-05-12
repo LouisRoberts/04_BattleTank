@@ -5,17 +5,25 @@
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"
 
+class ATank;
+class UTankAimingComponent;
+
 /**
- * 
+ * AIms the tank
  */
 UCLASS()
 class BATTLETANK_API ATankPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+protected:
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+		ATank* GetControlledTank() const;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
+		void FoundAimingComponent(UTankAimingComponent* AimCompRef);
+
 private:
-	ATank* GetControlledTank() const;
-	
 	void BeginPlay() override;
 
 	// Called every frame
@@ -32,10 +40,10 @@ private:
 
 	// The following are in the HUD
 	UPROPERTY(EditDefaultsOnly)
-	float CrossHairXLocation = 0.3333;
+	float CrossHairXLocation = 0.5;
 	
 	UPROPERTY(EditDefaultsOnly)
-	float CrossHairYLocation = 0.5;
+	float CrossHairYLocation = 0.3333;
 
 	UPROPERTY(EditDefaultsOnly)
 	float LineTraceRange = 1000000.0; // 10KM

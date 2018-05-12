@@ -15,27 +15,24 @@ UTankAimingComponent::UTankAimingComponent()
 	// off to improve performance if you don't need them.
 	//bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = true;
-
 	// ...
 }
 
-void UTankAimingComponent::SetBarrelReference(UTankBarrel * BarrelToSet)
+void UTankAimingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet)
 {
-	if (!BarrelToSet) { return; }
+	UE_LOG(LogTemp, Warning, TEXT("AimAt : 0 %s,%s"), *BarrelToSet->GetName(),*TurretToSet->GetName());
 	Barrel = BarrelToSet;
-}
-
-void UTankAimingComponent::SetTurretReference(UTankTurret * TurretToSet)
-{
-	if (!TurretToSet) { return; }
 	Turret = TurretToSet;
 }
 
 void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed) {
-	if (!Barrel) {
+	UE_LOG(LogTemp, Warning, TEXT("AimAt : 1"));
+	if (!ensure(Barrel)) {
+		UE_LOG(LogTemp, Warning, TEXT("AimAt : 2"));
 		return;
 	}
 	else {
+		UE_LOG(LogTemp, Warning, TEXT("AimAt : 3"));
 		FVector OutLaunchVelocity;
 		FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
 		// calculate the out launch velocity
@@ -49,7 +46,9 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed) {
 			0,
 			0,
 			ESuggestProjVelocityTraceOption::DoNotTrace);
+		
 		if(bHaveAimSolution) {
+			UE_LOG(LogTemp, Warning, TEXT("bHaveAimSolution : true"));
 			auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 			MoveBarrelTowards(AimDirection);
 		}
@@ -58,6 +57,8 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed) {
 }
 
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection) {
+	UE_LOG(LogTemp, Warning, TEXT("MoveBarrelTowards : true"));
+	if (!ensure(Barrel) || !ensure(Turret)) { return; }
 	// Work out difference between curren barrel and AimDirection
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
