@@ -26,7 +26,9 @@ void ATankPlayerController::AimTowardsCrosshair() {
 	FVector HitLocation; // Out Parameter
 	// get world location and if linetrace through crosshair
 	// if it hits something
-	if (GetSightRayHitLocation(HitLocation)) {
+	bool bGotHitLocation = GetSightRayHitLocation(HitLocation);
+	//UE_LOG(LogTemp, Warning, TEXT("bGotHitLocation: %i"), bGotHitLocation);
+	if (bGotHitLocation) {
 		// aim at point
 		AimingComponent->AimAt(HitLocation);
 	}
@@ -46,7 +48,7 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 		// line trace along points
 		return GetLookVectorHitLocation(LookDirection, HitLocation);
 	}
-	return true; // return true; ?
+	return false;
 }
 
 
