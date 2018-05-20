@@ -78,6 +78,11 @@ void UTankAimingComponent::BeginPlay()
 	LastFireTime = FPlatformTime::Seconds(); // so first fire after initial reload
 }
 
+EFiringState UTankAimingComponent::GetFiringState() const
+{
+	return FiringState;
+}
+
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
 {
 	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds) {
