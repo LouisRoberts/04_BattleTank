@@ -21,7 +21,8 @@ void ATankPlayerController::SetPawn(APawn * InPawn)
 		if (!ensure(PossessedTank)) {
 			return;
 		}
-		// TODO Subscribe
+		// Subscribe
+		PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::OnPossessedTankDeath);
 	}
 }
 
@@ -85,6 +86,12 @@ bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& 
 	return DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y,
 		CameraWorldLocation, LookDirection);
 }
+
+void ATankPlayerController::OnPossessedTankDeath() {
+	UE_LOG(LogTemp, Warning, TEXT("ATankPlayerController OnPossessedTankDeath Received"));
+	StartSpectatingOnly();
+}
+
 
 
 

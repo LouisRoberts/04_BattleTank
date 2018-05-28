@@ -17,6 +17,9 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
 		void FoundAimingComponent(UTankAimingComponent* AimCompRef);
+	
+	UFUNCTION()
+		void OnPossessedTankDeath();
 
 private:
 	void BeginPlay() override;
@@ -44,5 +47,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float LineTraceRange = 1000000.0; // 10KM
+
+	
 
 };
