@@ -52,11 +52,11 @@ void UTankAimingComponent::AimAt(FVector HitLocation) {
 
 }
 
-void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection) {
+void UTankAimingComponent::MoveBarrelTowards(FVector TargetAimDirection) {
 	if (!ensure(Barrel) || !ensure(Turret)) { return; }
 	// Work out difference between curren barrel and AimDirection
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
-	auto AimAsRotator = AimDirection.Rotation();
+	auto AimAsRotator = TargetAimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 	//UE_LOG(LogTemp, Warning, TEXT("AimAsRotator : %s"), *AimAsRotator.ToString());
 

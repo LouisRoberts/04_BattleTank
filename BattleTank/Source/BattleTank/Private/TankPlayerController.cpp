@@ -35,7 +35,7 @@ void ATankPlayerController::Tick(float DeltaTime)
 void ATankPlayerController::AimTowardsCrosshair() {
 	if (!GetPawn()) { return; }
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
-	if (!ensure(AimingComponent)) { return; }
+	if (!AimingComponent) { return; }
 
 	FVector HitLocation; // Out Parameter
 	// get world location and if linetrace through crosshair
@@ -70,7 +70,7 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection,FVect
 	FHitResult HitResult;
 	auto StartLocation = PlayerCameraManager->GetCameraLocation();
 	auto EndLocation = StartLocation + (LookDirection * LineTraceRange);
-	if (GetWorld()->LineTraceSingleByChannel(HitResult,StartLocation,EndLocation,ECollisionChannel::ECC_Visibility)) {
+	if (GetWorld()->LineTraceSingleByChannel(HitResult,StartLocation,EndLocation,ECollisionChannel::ECC_Camera)) {
 		// Line Trace Succeeds
 		HitLocation = HitResult.Location;
 		return true;

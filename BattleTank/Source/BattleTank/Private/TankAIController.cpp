@@ -18,7 +18,7 @@ void ATankAIController::SetPawn(APawn * InPawn)
 	Super::SetPawn(InPawn);
 	if (InPawn) {
 		auto PossessedTank = Cast<ATank>(InPawn);
-		if (!ensure(PossessedTank)) {
+		if (!PossessedTank) {
 			return;
 		}
 		// Subscribe
@@ -42,9 +42,7 @@ void ATankAIController::Tick(float DeltaTime)
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	auto PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
 	auto ControlledTank = GetPawn();
-	UE_LOG(LogTemp, Warning, TEXT("ATankAIController::Tick 1"));
-	if (!ensure(PlayerTank) && ControlledTank) { return; }
-		UE_LOG(LogTemp, Warning, TEXT("ATankAIController::Tick 2"));
+	if (!(PlayerTank && ControlledTank)) { return; }
 		MoveToActor(PlayerTank, AcceptanceRadius);
 		AimingComponent->AimAt(PlayerTank->GetActorLocation());
 		
